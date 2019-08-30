@@ -1,0 +1,48 @@
+version: "3"
+
+networks:
+  app_net:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "false"
+    ipam:
+      driver: default
+      config:
+        - subnet: 177.18.0.0/16
+
+services:
+  mysql8:
+    image: mysql:8
+    restart: always
+    privileged: "true"
+    container_name: tool-mysql8
+    environment:
+      - MYSQL_USER="worker"
+      - MYSQL_PASSWORD="123456"
+      - MYSQL_ROOT_PASSWORD="123456"
+    volumes:
+      - ./mysql8/conf/my.cnf:/etc/my.cnf
+      - ./mysql8/data:/var/lib/mysql
+    networks:
+      app_net:
+        ipv4_address: 177.18.0.2
+    expose:
+      - 3306
+    ports:
+      - 3306:3306
+
+  redis5:
+    image: redis:5
+    restart: always
+    privileged: "true"
+    container_name: tool-redis5
+    volumes:
+      - ./redis5/conf/redis.conf:/etc/redis/redis.conf
+      - ./redis5/data:/var/lib/redis
+    networks:
+      app_net:
+        ipv4_address: 177.18.0.3
+    expose:
+      - 6380
+    ports:
+      - 6380:6379

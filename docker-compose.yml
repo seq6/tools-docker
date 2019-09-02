@@ -2,36 +2,36 @@ version: "3"
 
 networks:
   app_net:
-    driver: bridge
+    driver: ${NETWORKS_DRIVER}
     driver_opts:
-      com.docker.network.enable_ipv6: "false"
+      com.docker.network.enable_ipv6: ${ENABLE_IPV6}
     ipam:
       driver: default
       config:
-        - subnet: 177.18.0.0/16
+        - subnet: ${SUBNET}
 
 services:
-  mysql8:
+  tool-mysql8:
     image: mysql:8
     restart: always
     privileged: "true"
     container_name: tool-mysql8
     environment:
-      - MYSQL_USER="worker"
-      - MYSQL_PASSWORD="123456"
-      - MYSQL_ROOT_PASSWORD="123456"
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     volumes:
       - ./mysql8/conf/my.cnf:/etc/my.cnf
       - ./mysql8/data:/var/lib/mysql
     networks:
       app_net:
-        ipv4_address: 177.18.0.2
+        ipv4_address: ${MYSQL_SUBNET_IP}
     expose:
-      - 3306
+      - ${MYSQL_PORT}
     ports:
-      - 3306:3306
+      - ${MYSQL_PORT}:3306
 
-  redis5:
+  tool-redis5:
     image: redis:5
     restart: always
     privileged: "true"
@@ -41,34 +41,13 @@ services:
       - ./redis5/data:/var/lib/redis
     networks:
       app_net:
-        ipv4_address: 177.18.0.3
+        ipv4_address: ${REDIS_SUBNET_IP}
     expose:
-      - 6380
+      - ${REDIS_PORT}
     ports:
-      - 6380:6379
+      - ${REDIS_PORT}:6379
 
-  elasticsearch7:
-    image: elasticsearch:7.3.0
-    restart: always
-    privileged: "true"
-    container_name: tool-elasticsearch7
-    volumes:
-      - ./elasticsearch7/conf:/usr/share/elasticsearch/conf
-      - ./elasticsearch7/data:/usr/share/elasticsearch/data
-      - ./elasticsearch7/logs:/usr/share/elasticsearch/logs
-    networks:
-      app_net:
-        ipv4_address: 177.18.0.4
-    environment:
-      - discovery.type=single-node
-    expose:
-      - 9200
-      - 9300
-    ports:
-      - 9200:9200
-      - 9300:9300
-
-  nginx:
+  tool-nginx:
     image: nginx:latest
     restart: always
     privileged: "true"
@@ -78,16 +57,16 @@ services:
       - ./nginx/data:/usr/share/nginx/html
       - ./nginx/sites-enabled:/etc/nginx/conf.d
       - ./nginx/log:/var/log/nginx
-      - ~/work:/work
+      - ${APP_PROJECT_PATH}:/work
     networks:
       app_net:
-        ipv4_address:  177.18.0.5
+        ipv4_address: ${NGINX_IP}
     expose:
-      - 80
+      - ${NGINX_PORT}
     ports:
-      - 80:80
+      - ${NGINX_PORT}:80
 
-  php-fpm73:
+  tool-phpfpm73:
     image: php:7.3-fpm
     restart: always
     privileged: "true"
@@ -96,11 +75,32 @@ services:
       - ./phpfpm73/php.ini-development:/usr/local/etc/php/php.ini-development
       - ./phpfpm73/php.ini-production:/usr/local/etc/php/php.ini-production
       - ./phpfpm73/php-fpm.conf:/usr/local/etc/php-fpm.conf
-      - ~/work:/work
+      - ${APP_PROJECT_PATH}:/work
     networks:
       app_net:
-        ipv4_address:  177.18.0.6
+        ipv4_address: ${PHPFPM_IP}
     expose:
-      - 9001
+      - ${PHPFPM_PORT}
     ports:
-      - 9001:9000
+      - ${PHPFPM_PORT}:9000
+
+  tool-elasticsearch7:
+    image: elasticsearch:7.3.0
+    restart: always
+    privileged: "true"
+    container_name: tool-elasticsearch7
+    environment:
+      - discovery.type=single-node
+    volumes:
+      - ./elasticsearch7/conf:/usr/share/elasticsearch/conf
+      - ./elasticsearch7/data:/usr/share/elasticsearch/data
+      - ./elasticsearch7/logs:/usr/share/elasticsearch/logs
+    networks:
+      app_net:
+        ipv4_address: ${ELASTICSEARCH_IP}
+    expose:
+      - ${ELASTICSEARCH_HTTP_PORT}
+      - ${ELASTICSEARCH_TCP_PORT}
+    ports:
+      - ${ELASTICSEARCH_HTTP_PORT}:9200
+      - ${ELASTICSEARCH_TCP_PORT}:9300

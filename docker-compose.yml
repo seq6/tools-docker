@@ -72,8 +72,7 @@ services:
     privileged: "true"
     container_name: tool-phpfpm73
     volumes:
-      - ./phpfpm73/php.ini-development:/usr/local/etc/php/php.ini-development
-      - ./phpfpm73/php.ini-production:/usr/local/etc/php/php.ini-production
+      - ./phpfpm73/php.ini:/usr/local/etc/php/php.ini
       - ./phpfpm73/php-fpm.conf:/usr/local/etc/php-fpm.conf
       - ${APP_PROJECT_PATH}:/work
     networks:

@@ -74,7 +74,6 @@ services:
     volumes:
       - ./phpfpm73/conf/php.ini:/usr/local/etc/php/php.ini
       - ./phpfpm73/conf/php-fpm.conf:/usr/local/etc/php-fpm.conf
-      - ./phpfpm73/conf/www.conf:/usr/local/etc/php-fpm.d/www.conf
       - ./phpfpm73/log:/usr/local/var/log
       - ${APP_PROJECT_PATH}:/work
     networks:

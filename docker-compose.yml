@@ -105,3 +105,18 @@ services:
     ports:
       - ${ELASTICSEARCH_HTTP_PORT}:9200
       - ${ELASTICSEARCH_TCP_PORT}:9300
+
+  tool-adminer4:
+    image: adminer:4
+    restart: always
+    privileged: "true"
+    container_name: tool-adminer4
+    volumes:
+      - ./adminer4/adminer.css:/var/www/html/adminer.css
+    networks:
+      app_net:
+        ipv4_address: ${ADMINER_IP}
+    expose:
+      - ${ADMINER_PORT}
+    ports:
+      - ${ADMINER_PORT}:8080

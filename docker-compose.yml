@@ -120,3 +120,10 @@ services:
       - ${ADMINER_PORT}
     ports:
       - ${ADMINER_PORT}:8080
+
+#  tool-ubuntu1804:
+#    image: ubuntu:18.04
+#    restart: always
+#    privileged: "true"
+#    container_name: tool-ubuntu1804
+#    command: ["bash"]

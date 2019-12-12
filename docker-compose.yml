@@ -134,7 +134,7 @@ services:
     privileged: "true"
     container_name: tool-mosquitto16
     volumes:
-      - ./mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./mosquitto/config:/mosquitto/config
       - ./mosquitto/data:/mosquitto/data
       - ./mosquitto/log:/mosquitto/log
     networks:

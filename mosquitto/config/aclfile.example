@@ -1,0 +1,5 @@
+user subscriber
+topic read mytopic/#
+
+user publisher
+topic readwrite mytopic/#

@@ -122,7 +122,8 @@ services:
       - ${ADMINER_PORT}:8080
 
   tool-ubuntu1804:
-    image: ubuntu-php:1.0
+    build: ubuntu/
+    image: ubuntu-php:1.1
     restart: always
     privileged: "true"
     container_name: tool-ubuntu1804

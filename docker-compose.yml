@@ -115,6 +115,26 @@ services:
       - ${MQTT_PORT}:1883
       - ${MQTT_PORT_EX}:9001
 
+  tool-rabbitmq3:
+    image: rabbitmq:3-management
+    privileged: "true"
+    container_name: tool-rabbitmq3
+    environment:
+      - RABBITMQ_DEFAULT_VHOST=rabbit0
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
+    volumes:
+      - ./rabbitmq3/data:/var/lib/rabbitmq
+    networks:
+      app_net:
+        ipv4_address: ${RABBITMQ_IP}
+    expose:
+      - 5672
+      - 15672
+    ports:
+      - ${RABBITMQ_PORT}:5672
+      - ${RABBITMQ_MANAGE_PORT}:15672
+
   tool-nginx:
     image: nginx:latest
     privileged: "true"

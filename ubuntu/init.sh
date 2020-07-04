@@ -1,1 +1,0 @@
-docker run -it -v "~/work":"/work" ubuntu bash
